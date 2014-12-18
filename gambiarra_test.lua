@@ -1,10 +1,10 @@
-local gambiarra = require('gambiarra')
+local test = require('gambiarra')
 
 local actual = {}
 local expected = {}
 
 -- Set meta test handler
-gambiarra(function(e, test, msg)
+test(function(e, test, msg)
 	if e == 'begin' then
 		currentTest = {
 			name = test,

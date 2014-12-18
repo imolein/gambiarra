@@ -54,74 +54,73 @@ local function spy(f)
 	return s
 end
 
+local pendingtests = {}
+local env = _G
+local gambiarrahandler = TERMINAL_HANDLER
 
-return function(handler, env)
+local function runpending()
+	if pendingtests[1] ~= nil then pendingtests[1](runpending) end
+end
 
-	local pendingtests = {}
-
-	local function runpending()
-		if pendingtests[1] ~= nil then pendingtests[1](runpending) end
+return function(name, f, async)
+	if type(name) == 'function' then
+		gambiarrahandler = name
+		env = f or _G
+		return
 	end
 
-	local function test(name, f, async)
-		local testfn = function(next)
+	local testfn = function(next)
 
-			local prev = {
-				ok = env.ok,
-				spy = env.spy,
-				eq = env.eq
-			}
+		local prev = {
+			ok = env.ok,
+			spy = env.spy,
+			eq = env.eq
+		}
 
-			local restore = function()
-				env.ok = prev.ok
-				env.spy = prev.spy
-				env.eq = prev.eq
-				env.gambiarrahandler('end', name)
-				table.remove(pendingtests, 1)
-				if next then next() end
+		local restore = function()
+			env.ok = prev.ok
+			env.spy = prev.spy
+			env.eq = prev.eq
+			gambiarrahandler('end', name)
+			table.remove(pendingtests, 1)
+			if next then next() end
+		end
+
+		local handler = gambiarrahandler
+
+		env.eq = deepeq
+		env.spy = spy
+		env.ok = function(cond, msg)
+			if not msg then
+				msg = debug.getinfo(2, 'S').short_src..":"..debug.getinfo(2, 'l').currentline
 			end
-
-			local handler = env.gambiarrahandler
-
-			env.eq = deepeq
-			env.spy = spy
-			env.ok = function(cond, msg)
-				if not msg then
-					msg = debug.getinfo(2, 'S').short_src..":"..debug.getinfo(2, 'l').currentline
-				end
-				if cond then
-					handler('pass', name, msg)
-				else
-					handler('fail', name, msg)
-				end
+			if cond then
+				handler('pass', name, msg)
+			else
+				handler('fail', name, msg)
 			end
+		end
 
-			handler('begin', name);
-			local ok, err = pcall(f, restore)
-			if not ok then
-				handler('except', name, err)
-			end
-
-			if not async then
-				handler('end', name);
-				env.ok = prev.ok;
-				env.spy = prev.spy;
-				env.eq = prev.eq;
-			end
+		handler('begin', name);
+		local ok, err = pcall(f, restore)
+		if not ok then
+			handler('except', name, err)
 		end
 
 		if not async then
-			testfn()
-		else
-			table.insert(pendingtests, testfn)
-			if #pendingtests == 1 then
-				runpending()
-			end
+			handler('end', name);
+			env.ok = prev.ok;
+			env.spy = prev.spy;
+			env.eq = prev.eq;
 		end
 	end
 
-	env = env or _G
-	env.gambiarrahandler = handler or TERMINAL_HANDLER
-
-	env.test = test
+	if not async then
+		testfn()
+	else
+		table.insert(pendingtests, testfn)
+		if #pendingtests == 1 then
+			runpending()
+		end
+	end
 end
