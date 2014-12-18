@@ -86,6 +86,9 @@ return function(handler, env)
 			env.eq = deepeq
 			env.spy = spy
 			env.ok = function(cond, msg)
+				if not msg then
+					msg = debug.getinfo(2, 'S').short_src..":"..debug.getinfo(2, 'l').currentline
+				end
 				if cond then
 					handler('pass', name, msg)
 				else

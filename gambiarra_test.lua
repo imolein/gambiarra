@@ -60,6 +60,11 @@ metatest('simple assert fails', function()
 	ok(1 == 2, '1~=2')
 end, {}, {'1~=2'})
 
+metatest('ok without a message', function()
+	ok(1 == 1)
+	ok(1 == 2)
+end, {'gambiarra_test.lua:64'}, {'gambiarra_test.lua:65'})
+
 --
 -- Equality tests
 --
