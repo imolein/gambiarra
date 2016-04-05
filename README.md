@@ -44,11 +44,11 @@ customize test reports:
 		done()
 	end, true)
 
-`test()` defines also three helper functions that are added when test is
-executed - `ok`, `eq` and `spy`.
+`test()` defines also four helper functions that are added when test is
+executed - `ok`, `eq`, `eqok` and `spy`.
 
 `ok(cond:bool, [msg:string])` is a simple assertion helper. It takes any
-boolean condition and an optional assertion message.  If no message is define -
+boolean condition and an optional assertion message.  If no message is defined -
 current filename and line will be used.
 
 	ok(1 == 1)                   -- prints 'foo.lua:42'
@@ -60,6 +60,17 @@ strings, booleans, nils, functions and tables. It's mostly useful within ok():
 	ok(eq(1, 1))
 	ok(eq('foo', 'bar'))
 	ok(eq({a='b',c='d'}, {c='d',a='b'})
+
+`eqok(actual, expected, msg:string)` Works just as `ok`, but will use `eq` to 
+compare actual and expected, and if they are not equal, will print what it 
+expected but what it got.
+
+	local x = 1
+    eqok(x, 1, "x is one") -- OUT: "One is one"
+    eqok(x, 2, "x is one") -- OUT: "One is one: Expected 2 but got 1"
+    eqok({a='b',c='d'}, {c='d',a='b'}, "Tables are equal") -- OUT: "Expected table 0864545 but got table 08115636"
+	-- If you define __tostring metamethods for your tables, they will be used.
+	
 
 Finally, `spy([f])` creates function wrappers that remember each their call
 (arguments, errors) but behaves much like the real function. Real function is
@@ -77,6 +88,12 @@ were called with correct values.
 	ok(f.errors[3] ~= nil)
 
 ## Reports
+
+To have gambiarra print a concluding report at the end, use `test:report()`:
+
+	local test = require "gambiarra"
+	test:report()
+	-- OUT: "All 0 tests passed."
 
 Another useful feature is that you can customize test reports as you need.
 But default tests are printed in color using ANSI escape sequences and use
