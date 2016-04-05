@@ -125,7 +125,9 @@ function testFunction(name, f, async)
             if deepeq(exp, act) then
                 handler('pass', name, msg)
             else
-                handler('fail', name, msg .. "\n  Expected " .. exp .. " but was " .. act .. ".")
+                handler('fail', name, msg ..
+                        "\n  Expected " .. tostring(exp) ..
+                        " but was " .. tostring(act) .. ".")
             end
         end
 
