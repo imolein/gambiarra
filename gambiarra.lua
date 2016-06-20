@@ -52,6 +52,7 @@ end
 
 local function spy(f)
     local s = {}
+    s.called = {}
     setmetatable(s, {__call = function(s, ...)
         s.called = s.called or {}
         local a = args(...)
