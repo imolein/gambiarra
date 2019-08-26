@@ -1,0 +1,29 @@
+---
+kind: pipeline
+name: lua5.1
+
+steps:
+- name: test
+  image: imo/lua5.1
+  commands:
+    - lua gambiarra_test.lua
+
+---
+kind: pipeline
+name: lua5.2
+
+steps:
+- name: test
+  image: imo/lua5.2
+  commands:
+    - lua gambiarra_test.lua
+
+---
+kind: pipeline
+name: lua5.3
+
+steps:
+- name: test
+  image: imo/lua5.3
+  commands:
+    - lua gambiarra_test.lua
