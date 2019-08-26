@@ -5,6 +5,7 @@ name: lua5.1
 steps:
 - name: test
   image: imo/lua5.1:latest
+  pull: never
   commands:
     - lua gambiarra_test.lua
 
@@ -15,6 +16,7 @@ name: lua5.2
 steps:
 - name: test
   image: imo/lua5.2:latest
+  pull: never
   commands:
     - lua gambiarra_test.lua
 
@@ -25,5 +27,6 @@ name: lua5.3
 steps:
 - name: test
   image: imo/lua5.3:latest
+  pull: never
   commands:
     - lua gambiarra_test.lua
