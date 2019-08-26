@@ -4,7 +4,7 @@ name: lua5.1
 
 steps:
 - name: test
-  image: imo/lua5.1
+  image: imo/lua5.1:latest
   commands:
     - lua gambiarra_test.lua
 
@@ -14,7 +14,7 @@ name: lua5.2
 
 steps:
 - name: test
-  image: imo/lua5.2
+  image: imo/lua5.2:latest
   commands:
     - lua gambiarra_test.lua
 
@@ -24,6 +24,6 @@ name: lua5.3
 
 steps:
 - name: test
-  image: imo/lua5.3
+  image: imo/lua5.3:latest
   commands:
     - lua gambiarra_test.lua
