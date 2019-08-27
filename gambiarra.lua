@@ -98,7 +98,7 @@ local function testFunction(name, f, async)
             env.ok = prev.ok
             env.spy = prev.spy
             env.eq = prev.eq
-            eqok = env.eqok
+            env.eqok = prev.eqok
             gambiarrahandler('end', name)
             table.remove(pendingtests, 1)
             if next then next() end
@@ -108,7 +108,7 @@ local function testFunction(name, f, async)
 
         env.eq = deepeq
         env.spy = spy
-        env.ok = function(cond, msg)
+        function env.ok(cond, msg)
             if not msg then
                 msg = debug.getinfo(2, 'S').short_src .. ':' .. debug.getinfo(2, 'l').currentline
             end
@@ -118,7 +118,7 @@ local function testFunction(name, f, async)
                 handler('fail', name, msg)
             end
         end
-        env.eqok = function(act, exp, msg)
+        function env.eqok(act, exp, msg)
             if not msg then
                 msg = debug.getinfo(2, 'S').short_src .. ':' .. debug.getinfo(2, 'l').currentline
             end
