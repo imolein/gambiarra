@@ -158,6 +158,10 @@ test('Some test', function()
 end)
 ```
 
+## Contributing
+
+Please open issues or pull requests at codeberg: https://codeberg.org/imo/gambiarra
+
 ## Appendix
 
 Library supports Lua >5.1. It is distributed under the MIT license. Contributers can be found in [CONTRIBUTORS.md](CONTRIBUTORS.md).
