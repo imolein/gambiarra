@@ -35,19 +35,18 @@ local function deepeq(a, b)
     if a == b then return true end
     -- Only equal tables could have passed previous tests
     if type(a) ~= 'table' then return false end
+    -- Compare tables size
+    if #a ~= #b then return false end
     -- Compare tables field by field
     for k, v in pairs(a) do
         if b[k] == nil or not deepeq(v, b[k]) then return false end
-    end
-    for k, v in pairs(b) do
-        if a[k] == nil or not deepeq(v, a[k]) then return false end
     end
     return true
 end
 
 -- Compatibility for Lua 5.1 and Lua 5.2
 local function args(...)
-    return { n=select('#', ...), ... }
+    return { n = select('#', ...), ... }
 end
 
 local function spy(f)
@@ -73,7 +72,7 @@ end
 
 local pendingtests = {}
 local env = _G
-local gambiarrahandler = TERMINAL_HANDLER
+local handler = TERMINAL_HANDLER
 
 local function runpending()
     if pendingtests[1] ~= nil then pendingtests[1](runpending) end
@@ -81,7 +80,7 @@ end
 
 local function testFunction(name, f, async)
     if type(name) == 'function' then
-        gambiarrahandler = name
+        handler = name
         env = f or _G
         return
     end
@@ -99,12 +98,10 @@ local function testFunction(name, f, async)
             env.spy = prev.spy
             env.eq = prev.eq
             env.eqok = prev.eqok
-            gambiarrahandler('end', name)
+            handler('end', name)
             table.remove(pendingtests, 1)
             if next then next() end
         end
-
-        local handler = gambiarrahandler
 
         env.eq = deepeq
         env.spy = spy
@@ -125,20 +122,18 @@ local function testFunction(name, f, async)
             if deepeq(exp, act) then
                 handler('pass', name, msg)
             else
-                handler('fail', name, msg ..
-                        '\n  Expected ' .. tostring(exp) ..
-                        ' but was ' .. tostring(act) .. '.')
+                handler('fail', name, string.format('%s: Expected %q, but got %q.', msg, tostring(exp), tostring(act)))
             end
         end
 
-        handler('begin', name);
+        handler('begin', name)
         local ok, err = pcall(f, restore)
         if not ok then
             handler('except', name, err)
         end
 
         if not async then
-            handler('end', name);
+            handler('end', name)
             env.ok = prev.ok;
             env.spy = prev.spy;
             env.eq = prev.eq;
