@@ -1,25 +1,25 @@
-local exportData = {
+local gambiarra = {
     passed = 0,
     failed = 0,
     report = function(self)
         if self.failed == 0 then
             print('All ' .. self.passed .. ' tests passed.')
         else
-            local nTests = self.passed + self.failed
-            print(self.failed .. ' tests failed out of ' .. nTests)
+            local total = self.passed + self.failed
+            print(self.failed .. ' tests failed out of ' .. total)
         end
     end
 }
 
-local function TERMINAL_HANDLER(e, test, msg)
+local function default_handler(e, test, msg)
     if e == 'pass' then
-        exportData.passed = exportData.passed + 1
+        gambiarra.passed = gambiarra.passed + 1
         print('[32mPASS[0m ' .. test .. ': ' .. msg)
     elseif e == 'fail' then
-        exportData.failed = exportData.failed + 1
+        gambiarra.failed = gambiarra.failed + 1
         print('[31mFAIL[0m ' .. test .. ': ' .. msg)
     elseif e == 'except' then
-        exportData.failed = exportData.failed + 1
+        gambiarra.failed = gambiarra.failed + 1
         print('[31mECPT[0m ' .. test .. ': ' .. msg)
     end
 end
@@ -72,13 +72,13 @@ end
 
 local pendingtests = {}
 local env = _G
-local handler = TERMINAL_HANDLER
+local handler = default_handler
 
 local function runpending()
     if pendingtests[1] ~= nil then pendingtests[1](runpending) end
 end
 
-local function testFunction(name, f, async)
+local function test_function(name, f, async)
     if type(name) == 'function' then
         handler = name
         env = f or _G
@@ -151,8 +151,8 @@ local function testFunction(name, f, async)
     end
 end
 
-setmetatable(exportData,
+setmetatable(gambiarra,
     { __call = function(_, name, f, async)
-        return testFunction(name, f, async)
+        return test_function(name, f, async)
     end })
-return exportData
+return gambiarra
