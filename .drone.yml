@@ -20,7 +20,7 @@ steps:
   pull: never
   commands:
     - lua gambiarra_test.lua
-  when:
+  trigger:
     status: success
 
 ---
@@ -33,8 +33,6 @@ steps:
   pull: never
   commands:
     - lua gambiarra_test.lua
-  when:
-    status: success
 
 ---
 kind: pipeline
@@ -46,5 +44,3 @@ steps:
   pull: never
   commands:
     - lua gambiarra_test.lua
-  when:
-    status: success
