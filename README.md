@@ -1,3 +1,5 @@
+[![Build Status](https://drone.kokolor.es/api/badges/imo/gambiarra/status.svg)](https://drone.kokolor.es/imo/gambiarra)
+
 # Gambiarra
 
 Gambiarra is a Lua version of Kludjs, and follows the idea of ultimately
