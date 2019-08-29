@@ -25,11 +25,11 @@ end)
 
 -- Helper function to print arrays
 local function stringify(t)
-  local s = ''
-  for i=1,#t do
-    s = s .. '"' .. t[i] .. '"' .. ' '
+  local s = {}
+  for i = 1, #t do
+    table.insert(s, string.format('"%s"', tostring(t[i])))
   end
-  return s:gsub('%s*$', '')
+  return table.concat(s, ' ')
 end
 
 -- Helper function to compare two tables
@@ -64,7 +64,7 @@ end, {}, {'1~=2'})
 metatest('ok without a message', function()
   ok(1 == 1)
   ok(1 == 2)
-end, {'gambiarra_test.lua:65'}, {'gambiarra_test.lua:67'})
+end, {'gambiarra_test.lua:65'}, {'gambiarra_test.lua:66'})
 
 --
 -- Equality tests
@@ -97,9 +97,9 @@ end, {'equal'}, {'swapped', 'longer', 'shorter'})
 
 metatest('eq objects', function()
   ok(eq({}, {}), 'empty')
-  ok(eq({a=1,b=2}, {a=1,b=2}), 'equal')
-  ok(eq({b=2,a=1}, {a=1,b=2}), 'swapped')
-  ok(eq({a=1,b=2}, {a=1,b=3}), 'not equal')
+  ok(eq({a = 1,b = 2}, {a = 1,b = 2}), 'equal')
+  ok(eq({b = 2,a = 1}, {a = 1,b = 2}), 'swapped')
+  ok(eq({a = 1,b = 2}, {a = 1,b = 3}), 'not equal')
 end, {'empty', 'equal', 'swapped'}, {'not equal'})
 
 metatest('eq nested objects', function()
@@ -140,7 +140,7 @@ end, {'not called', 'called', 'called once', 'called twice'}, {})
 
 metatest('spy with arguments', function()
   local x = 0
-  function setX(n) x = n end
+  local function setX(n) x = n end
   local f = spy(setX)
   f(1)
   ok(x == 1, 'x == 1')
@@ -151,15 +151,15 @@ metatest('spy with arguments', function()
 end, {'x == 1', 'called with 1', 'x == 42', 'called with 42'}, {})
 
 metatest('spy with nils', function()
-  function nils(a, dummy, b) return a, nil, b, nil end
+  local function nils(a, dummy, b) return a, nil, b, nil end
   local f = spy(nils)
-  r1, r2, r3, r4 = f(1, nil, 2)
+  local r1, r2, r3, r4 = f(1, nil, 2)
   ok(eq(f.called, {{1, nil, 2}}), 'nil in args')
   ok(r1 == 1 and r2 == nil and r3 == 2 and r4 == nil, 'nil in returns')
 end, {'nil in args', 'nil in returns'}, {})
 
 metatest('spy with exception', function()
-  function throwSomething(s)
+  local function throwSomething(s)
     if s ~= 'nopanic' then error('panic: '..s) end
   end
   local f = spy(throwSomething)
@@ -225,18 +225,21 @@ async_next()
 --
 -- Finalize: check test results
 --
+local exit_code = 0
 for i = 1,#expected do
   if actual[i] == nil then
-    print("[31m✘[0m "..expected[i].name..' (pending)')
+    print(string.format('[31m✘[0m %s (pending)', expected[i].name))
   elseif not comparetables(expected[i].pass, actual[i].pass) then
-    print("[31m✘[0m "..expected[i].name..' (passed): ['..
-      stringify(expected[i].pass)..'] vs ['..
-      stringify(actual[i].pass)..']')
+    print(string.format('[31m✘[0m %s (passed): [%s] vs [%s]',
+      expected[i].name, stringify(expected[i].pass), stringify(actual[i].pass)))
+    exit_code = 1
   elseif not comparetables(expected[i].fail, actual[i].fail) then
-    print("[31m✘[0m "..expected[i].name..' (failed): ['..
-      stringify(expected[i].fail)..'] vs ['..
-      stringify(actual[i].fail)..']')
+    print(string.format('[31m✘[0m %s (failed): [%s] vs [%s]',
+      expected[i].name, stringify(expected[i].fail), stringify(actual[i].fail)))
+    exit_code = 1
   else
     print("[32m✔[0m "..expected[i].name)
   end
 end
+
+os.exit(exit_code)
