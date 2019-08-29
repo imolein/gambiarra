@@ -1,3 +1,15 @@
+kind: pipeline
+name: lint
+
+steps:
+- name: lint
+  image: imo/luarocks5.3
+  pull: never
+  commands:
+    - luarocks install luacheck
+    - luacheck gambiarra.lua
+    - luacheck gambiarra_test.lua
+
 ---
 kind: pipeline
 name: lua5.1

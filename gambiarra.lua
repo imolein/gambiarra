@@ -55,14 +55,14 @@ end
 local function spy(f)
     local s = {}
     s.called = {}
-    setmetatable(s, { __call = function(s, ...)
+    setmetatable(s, { __call = function(_s, ...)
         local a = args(...)
-        table.insert(s.called, { ... })
+        table.insert(_s.called, { ... })
         if f then
             local r = args(pcall(f, unpack(a, 1, a.n)))
             if not r[1] then
-                s.errors = s.errors or {}
-                s.errors[#s.called] = r[2]
+                _s.errors = _s.errors or {}
+                _s.errors[#_s.called] = r[2]
             else
                 return unpack(r, 2, r.n)
             end

@@ -5,10 +5,10 @@ local expected = {}
 
 local currentTest
 -- Set meta test handler
-test(function(e, test, msg)
+test(function(e, testname, msg)
   if e == 'begin' then
     currentTest = {
-      name = test,
+      name = testname,
       pass = {},
       fail = {}
     }
@@ -19,7 +19,7 @@ test(function(e, test, msg)
   elseif e == 'fail' then
     table.insert(currentTest.fail, msg)
   elseif e == 'except' then
-    print('*** PANIC ***: ', test, msg)
+    print('*** PANIC ***: ', testname, msg)
   end
 end)
 
@@ -151,6 +151,7 @@ metatest('spy with arguments', function()
 end, {'x == 1', 'called with 1', 'x == 42', 'called with 42'}, {})
 
 metatest('spy with nils', function()
+  -- luacheck: no unused args
   local function nils(a, dummy, b) return a, nil, b, nil end
   local f = spy(nils)
   local r1, r2, r3, r4 = f(1, nil, 2)
@@ -171,6 +172,7 @@ metatest('spy with exception', function()
 end, {'no errors yet', 'args ok', 'thrown ok'}, {})
 
 metatest('another spy with exception', function()
+  -- luacheck: ignore a unknownVariable
   local f = spy(function() local a = unknownVariable + 1 end)
   f()
   ok(f.errors[1], 'exception thrown')
@@ -194,9 +196,9 @@ local function async_next()
 end
 
 metatest('async test', function(next)
-  async(function() 
+  async(function()
     ok(true, 'bar')
-    async(function() 
+    async(function()
       ok(true, 'baz')
       next()
     end)
@@ -213,7 +215,7 @@ async_next()
 async_next()
 
 metatest('another async test after async queue drained', function(next)
-  async(function() 
+  async(function()
     ok(true, 'bar')
     next()
   end)
