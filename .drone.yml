@@ -20,8 +20,9 @@ steps:
   pull: never
   commands:
     - lua gambiarra_test.lua
-  trigger:
-    status: success
+
+trigger:
+  status: success
 
 ---
 kind: pipeline
