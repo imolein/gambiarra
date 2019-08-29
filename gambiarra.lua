@@ -1,3 +1,6 @@
+-- Compatibility for Lua 5.1
+local unpack = unpack or table.unpack
+
 local gambiarra = {
     passed = 0,
     failed = 0,
@@ -53,17 +56,15 @@ local function spy(f)
     local s = {}
     s.called = {}
     setmetatable(s, { __call = function(s, ...)
-        s.called = s.called or {}
         local a = args(...)
         table.insert(s.called, { ... })
         if f then
-            local r
-            r = args(pcall(f, (unpack or table.unpack)(a, 1, a.n)))
+            local r = args(pcall(f, unpack(a, 1, a.n)))
             if not r[1] then
                 s.errors = s.errors or {}
                 s.errors[#s.called] = r[2]
             else
-                return (unpack or table.unpack)(r, 2, r.n)
+                return unpack(r, 2, r.n)
             end
         end
     end })
@@ -103,8 +104,6 @@ local function test_function(name, f, async)
             if next then next() end
         end
 
-        env.eq = deepeq
-        env.spy = spy
         function env.ok(cond, msg)
             if not msg then
                 msg = debug.getinfo(2, 'S').short_src .. ':' .. debug.getinfo(2, 'l').currentline
@@ -115,6 +114,7 @@ local function test_function(name, f, async)
                 handler('fail', name, msg)
             end
         end
+
         function env.eqok(act, exp, msg)
             if not msg then
                 msg = debug.getinfo(2, 'S').short_src .. ':' .. debug.getinfo(2, 'l').currentline
@@ -126,6 +126,9 @@ local function test_function(name, f, async)
             end
         end
 
+        env.eq = deepeq
+        env.spy = spy
+
         handler('begin', name)
         local ok, err = pcall(f, restore)
         if not ok then
@@ -134,9 +137,9 @@ local function test_function(name, f, async)
 
         if not async then
             handler('end', name)
-            env.ok = prev.ok;
-            env.spy = prev.spy;
-            env.eq = prev.eq;
+            env.ok = prev.ok
+            env.spy = prev.spy
+            env.eq = prev.eq
             env.eqok = prev.eqok
         end
     end
