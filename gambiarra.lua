@@ -106,7 +106,8 @@ local function test_function(name, f, async)
 
         function env.ok(cond, msg)
             if not msg then
-                msg = debug.getinfo(2, 'S').short_src .. ':' .. debug.getinfo(2, 'l').currentline
+                local d = debug.getinfo(2, 'Sl')
+                msg = d.short_src .. ':' .. d.currentline
             end
             if cond then
                 handler('pass', name, msg)
@@ -117,7 +118,8 @@ local function test_function(name, f, async)
 
         function env.eqok(act, exp, msg)
             if not msg then
-                msg = debug.getinfo(2, 'S').short_src .. ':' .. debug.getinfo(2, 'l').currentline
+                local d = debug.getinfo(2, 'Sl')
+                msg = d.short_src .. ':' .. d.currentline
             end
             if deepeq(exp, act) then
                 handler('pass', name, msg)
