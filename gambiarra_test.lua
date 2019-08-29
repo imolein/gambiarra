@@ -64,7 +64,7 @@ end, {}, {'1~=2'})
 metatest('ok without a message', function()
   ok(1 == 1)
   ok(1 == 2)
-end, {'gambiarra_test.lua:65'}, {'gambiarra_test.lua:67'})
+end, {'gambiarra_test.lua:65'}, {'gambiarra_test.lua:66'})
 
 --
 -- Equality tests
