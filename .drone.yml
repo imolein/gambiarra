@@ -22,7 +22,11 @@ steps:
     - lua gambiarra_test.lua
 
 trigger:
-  status: success
+  status: 
+    - success
+
+depends_on: 
+  - lint
 
 ---
 kind: pipeline
@@ -35,6 +39,13 @@ steps:
   commands:
     - lua gambiarra_test.lua
 
+trigger:
+  status: 
+    - success
+
+depends_on:
+  - lint
+
 ---
 kind: pipeline
 name: lua5.3
@@ -45,3 +56,10 @@ steps:
   pull: never
   commands:
     - lua gambiarra_test.lua
+
+trigger:
+  status:
+    - success
+
+depends_on: 
+  - lint
