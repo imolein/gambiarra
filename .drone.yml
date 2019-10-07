@@ -3,12 +3,11 @@ name: lint
 
 steps:
 - name: lint
-  image: imo/luarocks5.3
-  pull: never
+  image: imolein/luarocks:5.3
   commands:
     - luarocks install luacheck
-    - luacheck gambiarra.lua
-    - luacheck gambiarra_test.lua
+    - luacheck src/gambiarra.lua
+    - luacheck spec/gambiarra_test.lua
 
 ---
 kind: pipeline
@@ -16,10 +15,9 @@ name: lua5.1
 
 steps:
 - name: test
-  image: imo/lua5.1:latest
-  pull: never
+  image: imolein/lua:5.1
   commands:
-    - lua gambiarra_test.lua
+    - lua spec/gambiarra_test.lua
 
 trigger:
   status: 
@@ -34,10 +32,9 @@ name: lua5.2
 
 steps:
 - name: test
-  image: imo/lua5.2:latest
-  pull: never
+  image: imolein/lua:5.2
   commands:
-    - lua gambiarra_test.lua
+    - lua spec/gambiarra_test.lua
 
 trigger:
   status: 
@@ -52,10 +49,9 @@ name: lua5.3
 
 steps:
 - name: test
-  image: imo/lua5.3:latest
-  pull: never
+  image: imolein/lua:5.3
   commands:
-    - lua gambiarra_test.lua
+    - lua spec/gambiarra_test.lua
 
 trigger:
   status:
