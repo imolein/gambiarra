@@ -1,3 +1,5 @@
+package.path = './src/?.lua;' .. package.path
+
 local test = require('gambiarra')
 
 local actual = {}
@@ -64,7 +66,7 @@ end, {}, {'1~=2'})
 metatest('ok without a message', function()
   ok(1 == 1)
   ok(1 == 2)
-end, {'gambiarra_test.lua:65'}, {'gambiarra_test.lua:66'})
+end, {'spec/gambiarra_test.lua:67'}, {'spec/gambiarra_test.lua:68'})
 
 --
 -- Equality tests

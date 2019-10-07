@@ -2,6 +2,10 @@
 local unpack = unpack or table.unpack
 
 local gambiarra = {
+    _Version = 'gambiarra 0.3-0',
+    _DESCRIPTION = 'A tiny lua unit-testing library.',
+    _URL = 'https://codeberg.org/imo/gambiarra',
+    _LICENSE = 'MIT',
     passed = 0,
     failed = 0,
     report = function(self)
