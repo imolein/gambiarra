@@ -59,3 +59,20 @@ trigger:
 
 depends_on: 
   - lint
+
+---
+kind: pipeline
+name: lua5.4
+
+steps:
+- name: test
+  image: imolein/lua:5.4-beta
+  commands:
+    - lua spec/gambiarra_test.lua
+
+trigger:
+  status:
+    - success
+
+depends_on: 
+  - lint
