@@ -8,6 +8,10 @@ local expected = {}
 local currentTest
 -- Set meta test handler
 test(function(e, testname, msg)
+  if msg and msg:find('Expected', nil, true) then
+    msg = msg:match('^(.*): Expected.*$')
+  end
+
   if e == 'begin' then
     currentTest = {
       name = testname,
@@ -66,7 +70,7 @@ end, {}, {'1~=2'})
 metatest('ok without a message', function()
   ok(1 == 1)
   ok(1 == 2)
-end, {'spec/gambiarra_test.lua:67'}, {'spec/gambiarra_test.lua:68'})
+end, {'spec/gambiarra_test.lua:71'}, {'spec/gambiarra_test.lua:72'})
 
 --
 -- Equality tests

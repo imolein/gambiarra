@@ -2,7 +2,7 @@
 local unpack = unpack or table.unpack
 
 local gambiarra = {
-    _Version = 'gambiarra 0.3-0',
+    _Version = 'gambiarra 0.4-0',
     _DESCRIPTION = 'A tiny lua unit-testing library.',
     _URL = 'https://codeberg.org/imo/gambiarra',
     _LICENSE = 'MIT',
@@ -95,14 +95,14 @@ local function test_function(name, f, async)
             ok = env.ok,
             spy = env.spy,
             eq = env.eq,
-            eqok = env.eqok
         }
+        local exp
+        local act
 
         local function restore()
             env.ok = prev.ok
             env.spy = prev.spy
             env.eq = prev.eq
-            env.eqok = prev.eqok
             handler('end', name)
             table.remove(pendingtests, 1)
             if next then next() end
@@ -116,23 +116,17 @@ local function test_function(name, f, async)
             if cond then
                 handler('pass', name, msg)
             else
-                handler('fail', name, msg)
+                handler('fail', name,
+                    act and string.format('%s: Expected %q, but got %q.', msg, tostring(exp), tostring(act)) or msg)
             end
+            act, cond = nil, nil
         end
 
-        function env.eqok(act, exp, msg)
-            if not msg then
-                local d = debug.getinfo(2, 'Sl')
-                msg = d.short_src .. ':' .. d.currentline
-            end
-            if deepeq(exp, act) then
-                handler('pass', name, msg)
-            else
-                handler('fail', name, string.format('%s: Expected %q, but got %q.', msg, tostring(exp), tostring(act)))
-            end
+        function env.eq(a, b)
+            act, exp = a, b
+            return deepeq(exp, act)
         end
 
-        env.eq = deepeq
         env.spy = spy
 
         handler('begin', name)
@@ -146,7 +140,6 @@ local function test_function(name, f, async)
             env.ok = prev.ok
             env.spy = prev.spy
             env.eq = prev.eq
-            env.eqok = prev.eqok
         end
     end
 
