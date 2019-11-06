@@ -119,7 +119,7 @@ local function test_function(name, f, async)
                 handler('fail', name,
                     act and string.format('%s: Expected %q, but got %q.', msg, tostring(exp), tostring(act)) or msg)
             end
-            act, cond = nil, nil
+            act, exp = nil, nil
         end
 
         function env.eq(a, b)
