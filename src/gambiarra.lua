@@ -1,8 +1,8 @@
 -- Compatibility for Lua 5.1
-local unpack = unpack or table.unpack
+local unpack = unpack or table.unpack -- luacheck: ignore 143/table
 
 local gambiarra = {
-    _Version = 'gambiarra 0.4-0',
+    _VERSION = 'gambiarra 0.4-1',
     _DESCRIPTION = 'A tiny lua unit-testing library.',
     _URL = 'https://codeberg.org/imo/gambiarra',
     _LICENSE = 'MIT',
@@ -21,13 +21,13 @@ local gambiarra = {
 local function default_handler(e, test, msg)
     if e == 'pass' then
         gambiarra.passed = gambiarra.passed + 1
-        print('[32mPASS[0m ' .. test .. ': ' .. msg)
+        print(('[32mPASS[0m %s: %s'):format(test, msg))
     elseif e == 'fail' then
         gambiarra.failed = gambiarra.failed + 1
-        print('[31mFAIL[0m ' .. test .. ': ' .. msg)
+        print(('[31mFAIL[0m %s: %s'):format(test, msg))
     elseif e == 'except' then
         gambiarra.failed = gambiarra.failed + 1
-        print('[31mECPT[0m ' .. test .. ': ' .. msg)
+        print(('[31mECPT[0m %s: %s'):format(test, msg))
     end
 end
 
@@ -96,8 +96,7 @@ local function test_function(name, f, async)
             spy = env.spy,
             eq = env.eq,
         }
-        local exp
-        local act
+        local exp, act
 
         local function restore()
             env.ok = prev.ok
@@ -117,7 +116,7 @@ local function test_function(name, f, async)
                 handler('pass', name, msg)
             else
                 handler('fail', name,
-                    act and string.format('%s: Expected %q, but got %q.', msg, tostring(exp), tostring(act)) or msg)
+                    ('%s: Expected %q, but got %q.'):format(msg, tostring(exp), tostring(act)))
             end
             act, exp = nil, nil
         end
