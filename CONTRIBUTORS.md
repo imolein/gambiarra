@@ -12,3 +12,4 @@
 
     * Code formatting, cleaning
     * Some tiny fixes
+    * Added eqok() feature to eq() and removed eqok() (ce0ce2cbe4)

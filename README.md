@@ -5,7 +5,7 @@
 Gambiarra is a Lua version of Kludjs, and follows the idea of ultimately
 minimal unit testing.
 
-This is a fork from [salamandern's](https://bitbucket.org/salamandern/) [extended version](https://bitbucket.org/salamandern/gambiarra/src) of [zserges's](https://bitbucket.org/zserge/) [Gambiarra](https://bitbucket.org/zserge/gambiarra).
+This is a fork from of [zserges's](https://bitbucket.org/zserge/) [Gambiarra](https://bitbucket.org/zserge/gambiarra). It was based on [salamandern's](https://bitbucket.org/salamandern/) [changes](https://bitbucket.org/salamandern/gambiarra/src), but I removed them in ce0ce2cbe4.
 
 ## Install
 
@@ -62,7 +62,7 @@ end, true)
 executed - `ok`, `eq`, and `spy`.
 
 ### `ok(cond:bool, [msg:string])`
-It's a simple assertion helper. It takes any boolean condition and an optional assertion message. 
+It's a simple assertion helper. It takes any boolean condition and an optional assertion message.
 If no message is defined - current filename and line will be used.
 
 ```lua
