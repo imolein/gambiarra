@@ -1,4 +1,5 @@
 kind: pipeline
+type: docker
 name: lint
 
 steps:
@@ -11,24 +12,32 @@ steps:
 
 ---
 kind: pipeline
+type: docker
 name: lua5.1
+
+trigger:
+  status:
+    - success
+
+depends_on:
+  - lint
 
 steps:
 - name: test
   image: imolein/lua:5.1
   commands:
     - lua spec/gambiarra_test.lua
-
-trigger:
-  status: 
-    - success
-
-depends_on: 
-  - lint
-
 ---
 kind: pipeline
+type: docker
 name: lua5.2
+
+trigger:
+  status:
+    - success
+
+depends_on:
+  - lint
 
 steps:
 - name: test
@@ -36,16 +45,17 @@ steps:
   commands:
     - lua spec/gambiarra_test.lua
 
+---
+kind: pipeline
+type: docker
+name: lua5.3
+
 trigger:
-  status: 
+  status:
     - success
 
 depends_on:
   - lint
-
----
-kind: pipeline
-name: lua5.3
 
 steps:
 - name: test
@@ -53,26 +63,20 @@ steps:
   commands:
     - lua spec/gambiarra_test.lua
 
+---
+kind: pipeline
+type: docker
+name: lua5.4
+
 trigger:
   status:
     - success
 
-depends_on: 
+depends_on:
   - lint
-
----
-kind: pipeline
-name: lua5.4
 
 steps:
 - name: test
   image: imolein/lua:5.4-beta
   commands:
     - lua spec/gambiarra_test.lua
-
-trigger:
-  status:
-    - success
-
-depends_on: 
-  - lint
