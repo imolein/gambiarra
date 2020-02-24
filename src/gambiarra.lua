@@ -2,7 +2,7 @@
 local unpack = unpack or table.unpack -- luacheck: ignore 143/table
 
 local gambiarra = {
-    _VERSION = 'gambiarra 0.4-1',
+    _VERSION = 'gambiarra 0.4.1-0',
     _DESCRIPTION = 'A tiny lua unit-testing library.',
     _URL = 'https://codeberg.org/imo/gambiarra',
     _LICENSE = 'MIT',
